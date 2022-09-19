@@ -1,0 +1,5 @@
+vendor
+composer.lock
+
+# Ignore the PHPStorm IDE
+.idea
