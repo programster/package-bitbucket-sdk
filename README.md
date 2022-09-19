@@ -1,2 +1,4 @@
-# Bitbucket SDK
-An SDK for interfacing with the Bitbucket API.
+Bitbucket SDK
+=============
+
+A package to provide a client for interfacing with the Bitbucket API.
