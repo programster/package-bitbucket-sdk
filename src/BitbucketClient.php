@@ -239,16 +239,19 @@ class BitbucketClient
      * @param string $workspaceId - The ID of the workspace. This can be the unique string that looks like a slug, or
      * it can be a UUID, wrapped in {} characters.
      * @param string $repoSlug - the slug of the repository we wish to list the environments for.
-     * @return mixed
+     * @param DeploymentEnvironment|string $deploymentEnvironmentOrUuid - the UUID of a deployment environment, or a
+     * DeploymentEnvironment object we can retrieve the UUID from.
+     * @return Response
      */
     public function deleteDeploymentEnvironment(
         string $workspaceId,
         string $repoSlug,
-        DeploymentEnvironment $deploymentEnvironment
-    ) : ResponseInterface
+        DeploymentEnvironment|string $deploymentEnvironmentOrUuid
+    ) : Response
     {
-        $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/";
-        return $this->sendRequest(HttpMethod::DELETE, $path, $deploymentEnvironment->toArray());
+        $id = (is_string($deploymentEnvironmentOrUuid)) ? $deploymentEnvironmentOrUuid : $deploymentEnvironmentOrUuid->getUuid();
+        $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/{$id}";
+        return new Response($this->sendRequest(HttpMethod::DELETE, $path));
     }
 
 
