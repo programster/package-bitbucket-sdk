@@ -140,7 +140,7 @@ class BitbucketClient
             ]
         ];
 
-        $response = $client->sendRequest('POST', 'https://bitbucket.org/site/oauth2/access_token', $options);
+        $response = $client->request('POST', 'https://bitbucket.org/site/oauth2/access_token', $options);
         return new GetAuthTokensResponse($response);
     }
 
