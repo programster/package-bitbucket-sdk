@@ -14,6 +14,8 @@ class Response
 
     public function __construct(ResponseInterface $response)
     {
+        $this->m_underlyingResponse = $response;
+
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 299)
         {
             $this->m_wasSuccessful = true;
