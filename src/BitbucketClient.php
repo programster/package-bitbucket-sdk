@@ -3,10 +3,13 @@
 namespace Programster\Bitbucket;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+use Programster\Bitbucket\models\BitbucketVariable;
+use Programster\Bitbucket\models\DeploymentEnvironment;
+use Programster\Bitbucket\responses\ListDeploymentEnvironmentsResponse;
+use Programster\Bitbucket\responses\ListVariablesResponse;
+use Programster\Bitbucket\responses\Response;
 use Programster\Http\HttpMethod;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 
 class BitbucketClient
@@ -39,11 +42,11 @@ class BitbucketClient
         string $repoSlug,
         string $environmentId,
         BitbucketVariable $deploymentVariable
-    ) : CreateDeploymentVariableResponse
+    ) : Response
     {
         $path = "/repositories/{$workspaceId}/{$repoSlug}/deployments_config/environments/{$environmentId}/variables";
         $guzzleResponse = $this->sendRequest(HttpMethod::POST, $path, $deploymentVariable->toArray());
-        return new CreateDeploymentVariableResponse($guzzleResponse);
+        return new Response($guzzleResponse);
     }
 
 
@@ -55,10 +58,14 @@ class BitbucketClient
      * @param string $repoSlug
      * @return mixed
      */
-    public function createRepositoryVariable(string $workspaceId, string $repoSlug, BitbucketVariable $variable)
+    public function createRepositoryVariable(
+        string $workspaceId,
+        string $repoSlug,
+        BitbucketVariable $variable
+    ) : Response
     {
         $path = "/repositories/{$workspaceId}/{$repoSlug}/pipelines_config/variables/";
-        return $this->sendRequest(HttpMethod::POST, $path, $variable->toArray);
+        return new Response($this->sendRequest(HttpMethod::POST, $path, $variable->toArray));
     }
 
 
@@ -77,13 +84,13 @@ class BitbucketClient
         string $repoSlug,
         string $environmentId,
         string $variableId
-    ) : ResponseInterface
+    ) : Response
     {
         $path =
             "/repositories/{$workspaceId}/{$repoSlug}/deployments_config/environments/{$environmentId}" .
             "/variables/{$variableId}";
 
-        return $this->sendRequest('DELETE', $path);
+        return new Response($this->sendRequest('DELETE', $path));
     }
 
 
@@ -159,7 +166,7 @@ class BitbucketClient
     public function getEnvironmentId(string $workspaceId, string $repoSlug, string $environmentName) : string
     {
         $uuid = null;
-        $environments = $this->listEnvironments($workspaceId, $repoSlug);
+        $environments = $this->listDeploymentEnvironments($workspaceId, $repoSlug);
 
         foreach ($environments as $environment)
         {
@@ -194,23 +201,60 @@ class BitbucketClient
     ) : ListVariablesResponse
     {
         $path = "/repositories/{$workspaceId}/{$repoSlug}/deployments_config/environments/{$environmentId}/variables";
-        return $this->sendRequest('GET', $path);
+        return new ListVariablesResponse($this->sendRequest('GET', $path));
     }
 
 
     /**
      * List the environments in a repository.
+     * Bitbucket docs: https://bit.ly/3xyvDaz
      * @param string $workspaceId - The ID of the workspace. This can be the unique string that looks like a slug, or
      * it can be a UUID, wrapped in {} characters.
      * @param string $repoSlug - the slug of the repository we wish to list the environments for.
      * @return mixed
      */
-    public function listEnvironments(string $workspaceId, string $repoSlug)
+    public function listDeploymentEnvironments(string $workspaceId, string $repoSlug)
     {
         $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/";
-        $response = $this->sendRequest(HttpMethod::GET, $path);
-        $environmentData = json_decode($response->getBody()->getContents(), true);
-        return $environmentData['values'];
+        return new ListDeploymentEnvironmentsResponse($this->sendRequest(HttpMethod::GET, $path));
+    }
+
+
+    /**
+     * List the environments in a repository.
+     * Bitbucket docs: https://bit.ly/3xyvDaz
+     * @param string $workspaceId - The ID of the workspace. This can be the unique string that looks like a slug, or
+     * it can be a UUID, wrapped in {} characters.
+     * @param string $repoSlug - the slug of the repository we wish to list the environments for.
+     * @return mixed
+     */
+    public function createDeploymentEnvironment(
+        string $workspaceId,
+        string $repoSlug,
+        DeploymentEnvironment $deploymentEnvironment
+    ) : ResponseInterface
+    {
+        $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/";
+        return $this->sendRequest(HttpMethod::POST, $path, $deploymentEnvironment);
+    }
+
+
+    /**
+     * Delete a deployment environment
+     * Bitbucket docs: https://bit.ly/3DE88kh
+     * @param string $workspaceId - The ID of the workspace. This can be the unique string that looks like a slug, or
+     * it can be a UUID, wrapped in {} characters.
+     * @param string $repoSlug - the slug of the repository we wish to list the environments for.
+     * @return mixed
+     */
+    public function deleteDeploymentEnvironment(
+        string $workspaceId,
+        string $repoSlug,
+        DeploymentEnvironment $deploymentEnvironment
+    ) : ResponseInterface
+    {
+        $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/";
+        return $this->sendRequest(HttpMethod::DELETE, $path, $deploymentEnvironment);
     }
 
 
@@ -230,19 +274,19 @@ class BitbucketClient
         string $environmentId,
         string $existingDeploymentVariableId,
         BitbucketVariable $deploymentVariable
-    ) : ResponseInterface
+    ) : Response
     {
         $path =
             "/repositories/{$workspaceId}/{$repoSlug}/deployments_config/environments/{$environmentId}" .
             "/variables/{$existingDeploymentVariableId}";
 
-        return $this->sendRequest('PUT', $path, $deploymentVariable->toArray());
+        return new Response($this->sendRequest('PUT', $path, $deploymentVariable->toArray()));
     }
 
 
     /**
      * Helper method that sends the request, adding the required auth headers etc.
-     * @param string $method
+     * @param HttpMethod $method
      * @param string $path
      * @param array|null $body
      * @return ResponseInterface

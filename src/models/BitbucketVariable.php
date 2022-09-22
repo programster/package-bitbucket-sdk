@@ -1,7 +1,9 @@
 <?php
 
-namespace Programster\Bitbucket;
+namespace Programster\Bitbucket\models;
 
+
+use Programster\Bitbucket\JsonSerializable;
 
 class BitbucketVariable implements JsonSerializable
 {
