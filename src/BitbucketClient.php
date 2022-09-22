@@ -215,8 +215,8 @@ class BitbucketClient
 
 
     /**
-     * List the environments in a repository.
-     * Bitbucket docs: https://bit.ly/3xyvDaz
+     * Create a deployemnt environment.
+     * Bitbucket docs: https://bit.ly/3DHbMtL
      * @param string $workspaceId - The ID of the workspace. This can be the unique string that looks like a slug, or
      * it can be a UUID, wrapped in {} characters.
      * @param string $repoSlug - the slug of the repository we wish to list the environments for.
@@ -298,9 +298,7 @@ class BitbucketClient
 
         if ($body !== null)
         {
-            $options = [
-                'json' => $body
-            ];
+            $options['json'] = $body;
         }
 
         $url = $this->m_baseUrl . $path;
