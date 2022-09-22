@@ -11,7 +11,7 @@ final class GetAuthTokensResponse extends Response
     private readonly ?string $m_refreshToken;
     private readonly ?int $m_expiresIn;
     private readonly ?string $m_tokenType;
-    private readonly ?array $m_scopes;
+    private readonly ?string $m_scopes;
 
 
     public function __construct(ResponseInterface $response)
@@ -83,7 +83,7 @@ final class GetAuthTokensResponse extends Response
     }
 
 
-    public function getScopes() : array
+    public function getScopes() : string
     {
         if ($this->m_wasSuccessful === false)
         {
