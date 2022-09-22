@@ -30,7 +30,8 @@ final class DeploymentEnvironment implements \JsonSerializable
      * @param string $uuid
      * @param string $name
      * @param string $slug
-     * @param EnvironmentType $environmentType
+     * @param EnvironmentType $environmentType - the type of environment. E.g. "Test", "Staging", or "Production". This
+     * groups the environments together on the respository deployments page.
      * @param string $categoryName
      * @param bool $hidden
      * @param int|null $rank
@@ -116,4 +117,18 @@ final class DeploymentEnvironment implements \JsonSerializable
     {
         return $this->toArray();
     }
+
+
+    # Accessors
+    public function getUuid() : string { return $this->m_uuid; }
+    public function getType() : string { return $this->m_type; }
+    public function getName() : string { return $this->m_name; }
+    public function getSlug() : string { return $this->m_slug; }
+    public function getEnvironmentType() : EnvironmentType { return $this->m_environmentType; }
+    public function getHidden() : bool { return $this->m_hidden; }
+    public function getCategory() : DeploymentEnvironmentCategory { return $this->m_category; }
+    public function getRank() : ?int { return $this->m_rank; }
+    public function getDeploymentGateEnabled() : ?bool { return $this->m_deploymentGateEnabled; }
+    public function getEnvironmentLockEnabled() : ?bool { return $this->m_environmentLockEnabled; }
+    public function getLock() : ?DeploymentEnvironmentLock { return $this->m_lock; }
 }
