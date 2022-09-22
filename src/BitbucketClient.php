@@ -234,6 +234,28 @@ class BitbucketClient
 
 
     /**
+     * Update a deployment environment
+     * Bitbucket docs: https://bit.ly/3DNEr0k
+     * @param string $workspaceId - The ID of the workspace. This can be the unique string that looks like a slug, or
+     * it can be a UUID, wrapped in {} characters.
+     * @param string $repoSlug - the slug of the repository we wish to list the environments for.
+     * @param DeploymentEnvironment|string $deploymentEnvironmentOrUuid - the UUID of a deployment environment, or a
+     * DeploymentEnvironment object we can retrieve the UUID from.
+     * @return Response
+     */
+    public function updateDeploymentEnvironment(
+        string $workspaceId,
+        string $repoSlug,
+        DeploymentEnvironment|string $deploymentEnvironmentOrUuid
+    ) : Response
+    {
+        $id = (is_string($deploymentEnvironmentOrUuid)) ? $deploymentEnvironmentOrUuid : $deploymentEnvironmentOrUuid->getUuid();
+        $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/{$id}/changes";
+        return new Response($this->sendRequest(HttpMethod::POST, $path));
+    }
+
+
+    /**
      * Delete a deployment environment
      * Bitbucket docs: https://bit.ly/3DE88kh
      * @param string $workspaceId - The ID of the workspace. This can be the unique string that looks like a slug, or
