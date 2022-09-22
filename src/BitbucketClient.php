@@ -157,9 +157,9 @@ class BitbucketClient
     public function getEnvironmentId(string $workspaceId, string $repoSlug, string $environmentName) : string
     {
         $uuid = null;
-        $environments = $this->listDeploymentEnvironments($workspaceId, $repoSlug);
+        $response = $this->listDeploymentEnvironments($workspaceId, $repoSlug);
 
-        foreach ($environments as $environment)
+        foreach ($response->getDeploymentEnvironments() as $environment)
         {
             if (
                    strtolower($environmentName) === strtolower($environment['name'])
