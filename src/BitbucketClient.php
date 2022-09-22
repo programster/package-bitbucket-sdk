@@ -10,7 +10,6 @@ use Programster\Bitbucket\responses\GetAuthTokensResponse;
 use Programster\Bitbucket\responses\ListDeploymentEnvironmentsResponse;
 use Programster\Bitbucket\responses\ListVariablesResponse;
 use Programster\Bitbucket\responses\Response;
-use Programster\Http\HttpMethod;
 use Psr\Http\Message\ResponseInterface;
 
 
@@ -67,7 +66,7 @@ class BitbucketClient
     ) : Response
     {
         $path = "/repositories/{$workspaceId}/{$repoSlug}/pipelines_config/variables/";
-        return new Response($this->sendRequest(HttpMethod::POST, $path, $variable->toArray));
+        return new Response($this->sendRequest(HttpMethod::POST, $path, $variable->toArray()));
     }
 
 
@@ -91,7 +90,7 @@ class BitbucketClient
             "/repositories/{$workspaceId}/{$repoSlug}/deployments_config/environments/{$environmentId}" .
             "/variables/{$variableId}";
 
-        return new Response($this->sendRequest('DELETE', $path));
+        return new Response($this->sendRequest(HttpMethod::DELETE, $path));
     }
 
 
@@ -196,7 +195,7 @@ class BitbucketClient
     ) : ListVariablesResponse
     {
         $path = "/repositories/{$workspaceId}/{$repoSlug}/deployments_config/environments/{$environmentId}/variables";
-        return new ListVariablesResponse($this->sendRequest('GET', $path));
+        return new ListVariablesResponse($this->sendRequest(HttpMethod::GET, $path));
     }
 
 
@@ -230,7 +229,7 @@ class BitbucketClient
     ) : ResponseInterface
     {
         $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/";
-        return $this->sendRequest(HttpMethod::POST, $path, $deploymentEnvironment);
+        return $this->sendRequest(HttpMethod::POST, $path, $deploymentEnvironment->toArray());
     }
 
 
@@ -249,7 +248,7 @@ class BitbucketClient
     ) : ResponseInterface
     {
         $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/";
-        return $this->sendRequest(HttpMethod::DELETE, $path, $deploymentEnvironment);
+        return $this->sendRequest(HttpMethod::DELETE, $path, $deploymentEnvironment->toArray());
     }
 
 
@@ -274,7 +273,7 @@ class BitbucketClient
             "/repositories/{$workspaceId}/{$repoSlug}/deployments_config/environments/{$environmentId}" .
             "/variables/{$existingDeploymentVariableId}";
 
-        return new Response($this->sendRequest('PUT', $path, $deploymentVariable->toArray()));
+        return new Response($this->sendRequest(HttpMethod::PUT, $path, $deploymentVariable->toArray()));
     }
 
 
