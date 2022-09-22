@@ -13,7 +13,7 @@ class EnvironmentType implements \JsonSerializable
     public static function createFromResponseArray(array $data) : EnvironmentType
     {
         $requiredKeys = ['name', 'rank'];
-        $missingKeys = array_diff(array_keys($data), $requiredKeys);
+        $missingKeys = array_diff($requiredKeys, array_keys($data));
 
         if (count($missingKeys) > 0)
         {
