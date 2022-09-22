@@ -1,6 +1,6 @@
 <?php
 
-namespace Programster\Bitbucket\responses;
+namespace Programster\Bitbucket\Responses;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;

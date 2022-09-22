@@ -1,6 +1,6 @@
 <?php
 
-namespace Programster\Bitbucket\models;
+namespace Programster\Bitbucket\Models;
 
 
 class DeploymentEnvironment implements \JsonSerializable

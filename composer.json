@@ -19,7 +19,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Programster\\Bitbucket\\": "src/"
+            "Programster\\Bitbucket\\": "src/",
+            "Programster\\Bitbucket\\Exceptions\\": "src/exceptions",
+            "Programster\\Bitbucket\\Models\\": "src/models",
+            "Programster\\Bitbucket\\Responses\\": "src/responses"
         }
     }
 }

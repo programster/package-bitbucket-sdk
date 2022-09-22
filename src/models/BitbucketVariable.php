@@ -1,6 +1,6 @@
 <?php
 
-namespace Programster\Bitbucket\models;
+namespace Programster\Bitbucket\Models;
 
 
 use Programster\Bitbucket\JsonSerializable;

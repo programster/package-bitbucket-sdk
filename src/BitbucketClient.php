@@ -3,8 +3,10 @@
 namespace Programster\Bitbucket;
 
 use GuzzleHttp\Client;
+use Programster\Bitbucket\exceptions\ExceptionEnvironmentNotFound;
 use Programster\Bitbucket\models\BitbucketVariable;
 use Programster\Bitbucket\models\DeploymentEnvironment;
+use Programster\Bitbucket\responses\GetAuthTokensResponse;
 use Programster\Bitbucket\responses\ListDeploymentEnvironmentsResponse;
 use Programster\Bitbucket\responses\ListVariablesResponse;
 use Programster\Bitbucket\responses\Response;
@@ -77,7 +79,6 @@ class BitbucketClient
      * @param string $environmentId
      * @param string $variableId
      * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function deleteDeploymentVariable(
         string $workspaceId,
@@ -119,9 +120,12 @@ class BitbucketClient
      * @param string $clientId - the client ID that Bitbucket gave us.
      * @param string $clientSecret - the secret that Bitbucket gave us.
      * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function exchangeAuthCodeForTokens(string $code, string $clientId, string $clientSecret)
+    public static function exchangeAuthCodeForTokens(
+        string $code,
+        string $clientId,
+        string $clientSecret
+    ) : GetAuthTokensResponse
     {
         $client = new Client();
 
@@ -137,31 +141,19 @@ class BitbucketClient
         ];
 
         $response = $client->sendRequest('POST', 'https://bitbucket.org/site/oauth2/access_token', $options);
-
-        if ($response->getStatusCode() !== 200)
-        {
-            die("Auth code was non 200. Try again.");
-        }
-
-        $responseBody = json_decode($response->getBody()->getContents(), true);
-
-        /* @TODO return these in an object */
-        $accessToken = $responseBody['access_token'];
-        $refreshToken = $responseBody['refresh_token'];
-        $expiresIn = $responseBody['expires_in'];
-        $tokenType = $responseBody['token_type']; // should always be "bearer"
-        $scopes = $responseBody['scopes'];
-
-        return $response;
+        return new GetAuthTokensResponse($response);
     }
 
 
     /**
-     * Fetches the UUID of an environment, by its human name. E.g. "production" or "staging".
-     * @param string $workspaceId
-     * @param string $repoSlug
-     * @param string $environmentName
-     * @return string
+     * Fetches the UUID of an environment by its name. E.g. "production" or "staging". This will return matches based
+     * on name or slug
+     * @param string $workspaceId - the ID of the workspace the environment should contain the relevant repository
+     * @param string $repoSlug - the slug of the repository to find the environment in.
+     * @param string $environmentName - the name or slug of the environment you are trying to get. This search is
+     * case-independent.
+     * @return string - the UUID of the found environemnt.
+     * @throws ExceptionEnvironmentNotFound - if the environment could not be found.
      */
     public function getEnvironmentId(string $workspaceId, string $repoSlug, string $environmentName) : string
     {
@@ -170,7 +162,10 @@ class BitbucketClient
 
         foreach ($environments as $environment)
         {
-            if ($environment['slug'] === strtolower($environmentName))
+            if (
+                   strtolower($environmentName) === strtolower($environment['name'])
+                || $environment['slug'] === strtolower($environmentName)
+            )
             {
                 $uuid = $environment['uuid'];
                 break;
@@ -179,7 +174,7 @@ class BitbucketClient
 
         if ($uuid === null)
         {
-            throw new Exception("Failed to find environment: {$environmentName}");
+            throw new ExceptionEnvironmentNotFound($environmentName);
         }
 
         return $uuid;
@@ -266,7 +261,6 @@ class BitbucketClient
      * @param string $existingDeploymentVariableId
      * @param BitbucketVariable $deploymentVariable
      * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateDeploymentVariable(
         string $workspaceId,
@@ -290,7 +284,6 @@ class BitbucketClient
      * @param string $path
      * @param array|null $body
      * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function sendRequest(HttpMethod $method, string $path, array $body = null) : ResponseInterface
     {

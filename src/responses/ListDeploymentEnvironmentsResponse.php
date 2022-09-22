@@ -1,6 +1,6 @@
 <?php
 
-namespace Programster\Bitbucket\responses;
+namespace Programster\Bitbucket\Responses;
 
 use Programster\Bitbucket\models\DeploymentEnvironment;
 use Psr\Http\Message\ResponseInterface;
@@ -37,7 +37,7 @@ final class ListDeploymentEnvironmentsResponse extends Response
     {
         if ($this->wasSuccessful() === false)
         {
-            throw new \Exception("There are no deployment environments because the request was unsuccessful.");
+            throw new ExceptionRequestWasUnsuccessful("There are no deployment environments because the request was unsuccessful.");
         }
 
         return $this->m_deploymentEnvironments;

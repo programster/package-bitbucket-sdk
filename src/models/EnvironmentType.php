@@ -1,6 +1,6 @@
 <?php
 
-namespace Programster\Bitbucket\models;
+namespace Programster\Bitbucket\Models;
 
 
 class EnvironmentType implements \JsonSerializable
@@ -15,8 +15,7 @@ class EnvironmentType implements \JsonSerializable
 
         if (count($missingKeys) > 0)
         {
-            $msg = 'EnvironmentType::createFromResponseArray - missing required keys: ' . implode(', ', $missingKeys);
-            throw new \Exception($msg);
+            throw new ExceptionMissingRequiredKeys($missingKeys);
         }
 
         return new EnvironmentType($data['name'], $data['rank']);
@@ -25,7 +24,7 @@ class EnvironmentType implements \JsonSerializable
 
     public function __construct(private readonly string $name, private readonly int $rank)
     {
-        $this->m_type = "deployment_environment_type";
+        $this->type = "deployment_environment_type";
     }
 
 

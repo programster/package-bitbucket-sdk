@@ -1,7 +1,6 @@
 <?php
 
-namespace Programster\Bitbucket\responses;
-
+namespace Programster\Bitbucket\Responses;
 
 use Psr\Http\Message\ResponseInterface;
 
@@ -47,7 +46,7 @@ class ListVariablesResponse extends Response
     {
         if ($this->m_wasSuccessful === false)
         {
-            throw new \Exception("There are no response variables when the request was unsuccessful.");
+            throw new ExceptionRequestWasUnsuccessful("There are no response variables when the request was unsuccessful.");
         }
 
         return $this->m_variables;
