@@ -226,10 +226,10 @@ class BitbucketClient
         string $workspaceId,
         string $repoSlug,
         DeploymentEnvironment $deploymentEnvironment
-    ) : ResponseInterface
+    ) : Response
     {
         $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/";
-        return $this->sendRequest(HttpMethod::POST, $path, $deploymentEnvironment->toArray());
+        return new Response($this->sendRequest(HttpMethod::POST, $path, $deploymentEnvironment->toArray()));
     }
 
 
