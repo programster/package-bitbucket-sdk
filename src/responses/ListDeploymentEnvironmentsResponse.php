@@ -15,7 +15,7 @@ final class ListDeploymentEnvironmentsResponse extends Response
     {
         parent::__construct($response);
 
-        if ($response->getStatusCode() === 201)
+        if ($this->wasSuccessful())
         {
             $environmentData = json_decode($response->getBody()->getContents(), true);
 
