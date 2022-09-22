@@ -239,19 +239,19 @@ class BitbucketClient
      * @param string $workspaceId - The ID of the workspace. This can be the unique string that looks like a slug, or
      * it can be a UUID, wrapped in {} characters.
      * @param string $repoSlug - the slug of the repository we wish to list the environments for.
-     * @param DeploymentEnvironment|string $deploymentEnvironmentOrUuid - the UUID of a deployment environment, or a
-     * DeploymentEnvironment object we can retrieve the UUID from.
+     * @param string $currentDeploymentEnvironmentId - the ID of the current deployment environment that you wish to edit.
+     * @param DeploymentEnvironment $deploymentEnvironment - the deployment environment settings you wish to have set.
      * @return Response
      */
     public function updateDeploymentEnvironment(
         string $workspaceId,
         string $repoSlug,
-        DeploymentEnvironment|string $deploymentEnvironmentOrUuid
+        string $currentDeploymentEnvironmentId,
+        DeploymentEnvironment $deploymentEnvironment
     ) : Response
     {
-        $id = (is_string($deploymentEnvironmentOrUuid)) ? $deploymentEnvironmentOrUuid : $deploymentEnvironmentOrUuid->getUuid();
-        $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/{$id}/changes";
-        return new Response($this->sendRequest(HttpMethod::POST, $path));
+        $path = "/repositories/{$workspaceId}/{$repoSlug}/environments/{$currentDeploymentEnvironmentId}/changes";
+        return new Response($this->sendRequest(HttpMethod::POST, $path, $deploymentEnvironment->toArray()));
     }
 
 
