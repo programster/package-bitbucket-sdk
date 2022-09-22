@@ -57,6 +57,7 @@ final class DeploymentEnvironment implements \JsonSerializable
         $deploymentEnvironment->m_rank = $rank;
         $deploymentEnvironment->m_lock = null;
         $deploymentEnvironment->m_environmentLockEnabled = null;
+        $deploymentEnvironment->m_deploymentGateEnabled = null;
         return $deploymentEnvironment;
     }
 
