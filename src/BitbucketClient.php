@@ -162,11 +162,11 @@ class BitbucketClient
         foreach ($response->getDeploymentEnvironments() as $environment)
         {
             if (
-                   strtolower($environmentName) === strtolower($environment['name'])
-                || $environment['slug'] === strtolower($environmentName)
+                   strtolower($environmentName) === strtolower($environment->getName())
+                || $environment->getSlug() === strtolower($environmentName)
             )
             {
-                $uuid = $environment['uuid'];
+                $uuid = $environment->getUuid();
                 break;
             }
         }
