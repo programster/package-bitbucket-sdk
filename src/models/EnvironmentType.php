@@ -2,6 +2,8 @@
 
 namespace Programster\Bitbucket\Models;
 
+use Programster\Bitbucket\Exceptions\ExceptionMissingRequiredKeys;
+
 
 class EnvironmentType implements \JsonSerializable
 {
