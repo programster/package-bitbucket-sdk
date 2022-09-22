@@ -5,7 +5,7 @@ namespace Programster\Bitbucket\Models;
 
 use Programster\Bitbucket\JsonSerializable;
 
-class BitbucketVariable implements JsonSerializable
+class BitbucketVariable implements \JsonSerializable
 {
     private readonly string $type;
 
