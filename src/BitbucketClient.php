@@ -72,7 +72,7 @@ class BitbucketClient
 
     /**
      * Delete a deployment variable.
-     * Bitbucket docs: https://bit.ly/3RUaJuK
+     * Bitbucket docs: https://bit.ly/3qxfz8x
      * @param string $workspaceId
      * @param string $repoSlug
      * @param string $environmentId
