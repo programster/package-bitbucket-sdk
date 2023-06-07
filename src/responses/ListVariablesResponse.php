@@ -2,6 +2,7 @@
 
 namespace Programster\Bitbucket\Responses;
 
+use Programster\Bitbucket\Models\BitbucketVariable;
 use Psr\Http\Message\ResponseInterface;
 
 
