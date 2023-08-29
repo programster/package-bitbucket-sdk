@@ -34,7 +34,7 @@ class ListVariablesResponse extends Response
                 $this->m_variables[] = new BitbucketVariable(
                     uuid: $responseVariable['uuid'],
                     key: $responseVariable['key'],
-                    value: $responseVariable['value'],
+                    value: (array_key_exists('value', $responseVariable)) ? $responseVariable['value'] : null, // may not be set if value is secured/null
                     secured: $responseVariable['secured'],
                 );
             }
